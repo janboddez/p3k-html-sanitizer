@@ -11,7 +11,8 @@ class HTML {
     $opts['baseURL'] = $opts['baseURL'] ?? false;
 
     $allowed = [
-      'a',
+      '*[class]',
+      'a[href]',
       'abbr',
       'b',
       'br',
@@ -22,7 +23,7 @@ class HTML {
       'q',
       'strike',
       'strong',
-      'time',
+      'time[datetime]',
       'blockquote',
       'pre',
       'p',
@@ -36,14 +37,29 @@ class HTML {
       'li',
       'ol',
       'span',
-      'hr'
+      'sub',
+      'sup',
+      'table',
+      'thead',
+      'tbody',
+      'tfoot',
+      'tr',
+      'th[colspan|rowspan]',
+      'td[colspan|rowspan]',
+      'caption',
+      'figure',
+      'figcaption',
     ];
-    if($opts['allowImg'])
-      $allowed[] = 'img';
+
+    if ($opts['allowImg']) {
+      $allowed[] = 'img[src|alt]';
+    }
 
     $config = HTMLPurifier_Config::createDefault();
     $config->set('Cache.DefinitionImpl', null);
-    $config->set('HTML.AllowedElements', $allowed);
+    // $config->set('HTML.AllowedElements', $allowed);
+    $config->set('HTML.Allowed', implode(',', $allowed));
+    // $config->set('AutoFormat.RemoveEmpty', false); // Do not remove empty (e.g., `td`) elements.
 
     if($opts['baseURL']) {
       $config->set('URI.MakeAbsolute', true);
@@ -67,6 +83,9 @@ class HTML {
         'datetime' => 'Text'
       ]
     );
+
+    $def->addElement('figcaption', 'Block', 'Flow', 'Common');
+    $def->addElement('figure', 'Block', 'Optional: (figcaption, Flow) | (Flow, figcaption) | Flow', 'Common');
 
     if($opts['allowMf2']) {
       // Strip all class attribute values that aren't an mf2 class
