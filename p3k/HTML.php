@@ -40,13 +40,6 @@ class HTML {
       'span',
       'sub',
       'sup',
-      'table',
-      'thead',
-      'tbody',
-      'tfoot',
-      'tr',
-      'th[colspan|rowspan]',
-      'td[colspan|rowspan]',
       'caption',
       'figure',
       'figcaption',
@@ -62,8 +55,8 @@ class HTML {
       $allowed[] = 'tbody';
       $allowed[] = 'tfoot';
       $allowed[] = 'tr';
-      $allowed[] = 'th';
-      $allowed[] = 'td';
+      $allowed[] = 'th[colspan|rowspan]';
+      $allowed[] = 'td[colspan|rowspan]';
     }
 
     $config = HTMLPurifier_Config::createDefault();
