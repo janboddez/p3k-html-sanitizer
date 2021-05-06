@@ -10,7 +10,7 @@ class SanitizeTest extends PHPUnit\Framework\TestCase {
     return p3k\HTML::sanitize($html, $opts);
   }
 
-  public function testAllowsWhitelistedTags() {
+  public function testAllowsValidTags() {
     $html = $this->sanitize('entry-with-valid-tags');
 
     $this->assertStringContainsString('This content has only valid tags.', $html);
@@ -91,6 +91,26 @@ class SanitizeTest extends PHPUnit\Framework\TestCase {
     $this->assertStringContainsString('<a href="http://sanitize.example/">keeps href</a>', $html);
     $this->assertStringContainsString('<img src="http://sanitize.example/photo.jpg" width="10" alt="photo.jpg" />', $html);
     $this->assertStringContainsString('<time datetime="2019-11">November 2019</time>', $html);
+  }
+
+  public function testRemovesTablesByDefault() {
+    $html = $this->sanitize('tables');
+
+    $this->assertStringNotContainsString('<table>', $html);
+    $this->assertStringNotContainsString('<tr>', $html);
+    $this->assertStringNotContainsString('<td>', $html);
+  }
+
+  public function testAllowsTables() {
+    $html = $this->sanitize('tables', ['allowTables' => true]);
+
+    $this->assertStringContainsString('<table>', $html);
+    $this->assertStringContainsString('<thead>', $html);
+    $this->assertStringContainsString('<tbody>', $html);
+    $this->assertStringContainsString('<tfoot>', $html);
+    $this->assertStringContainsString('<tr>', $html);
+    $this->assertStringContainsString('<th>', $html);
+    $this->assertStringContainsString('<td>', $html);
   }
 
 }
